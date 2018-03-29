@@ -36,8 +36,14 @@ try {
     // do nothing
 }
 
+// move assets to _site
+gulp.task('move-assets', () => {
+    gulp.src(['css/**/*.css', 'js/**/*.js', 'images/**/*.*'], { base: './' })
+        .pipe(gulp.dest('_site/'));
+});
 
-gulp.task('compile', () =>
+// compile templates
+gulp.task('compile', ['move-assets'], () =>
     gulp.src(['_posts/**/*.html'])
         // only compile pages that have changed
         // .pipe(changed('./_site/', {
