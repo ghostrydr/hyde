@@ -6,22 +6,30 @@ const frontmatter = require('gulp-front-matter');
 const fs = require('fs');
 const autoload = require('auto-load');
 const path = require('path');
+const yaml = require('js-yaml');
 
 const engine = new Liquid.Engine();
 engine.registerFileSystem(new Liquid.LocalFileSystem('./_includes'));
 
 
-// load plugins
-const plugins = autoload(path.resolve(__dirname, '_plugins'));
-Object.keys(plugins).forEach((key) => {
-    if (typeof plugins[key] === 'object') {
-        Object.keys(plugins[key]).forEach((alias) => {
-            engine.registerTag(alias, plugins[key][alias]);
-        });
-    } else {
-        engine.registerTag(key, plugins[key]);
-    }
-});
+// load and parse _config.yml
+let _config = null;
+try {
+    _config = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, '_config.yml'), 'utf8'));
+} catch (e) {
+    console.log(e);
+}
+
+    const plugins = autoload(path.resolve(__dirname, '_plugins'));
+    Object.keys(plugins).forEach((key) => {
+        if (typeof plugins[key] === 'object') {
+            Object.keys(plugins[key]).forEach((alias) => {
+                engine.registerTag(alias, plugins[key][alias]);
+            });
+        } else {
+            engine.registerTag(key, plugins[key]);
+        }
+    });
 
 gulp.task('compile', () =>
     gulp.src(['_posts/**/*.html'])
@@ -45,6 +53,7 @@ gulp.task('compile', () =>
             engine.parseAndRender(template, {
                 page: file.meta,
                 content: String(file.contents),
+                site: _config,
             }).then((result) => {
                 // compile page content with no namespace on the frontmatter
                 engine.parseAndRender(result, file.meta).then((final) => {
