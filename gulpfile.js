@@ -20,6 +20,8 @@ try {
     console.log(e);
 }
 
+// try to autoload plugins
+try {
     const plugins = autoload(path.resolve(__dirname, '_plugins'));
     Object.keys(plugins).forEach((key) => {
         if (typeof plugins[key] === 'object') {
@@ -30,6 +32,10 @@ try {
             engine.registerTag(key, plugins[key]);
         }
     });
+} catch (e) {
+    // do nothing
+}
+
 
 gulp.task('compile', () =>
     gulp.src(['_posts/**/*.html'])
