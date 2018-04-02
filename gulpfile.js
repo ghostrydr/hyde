@@ -44,6 +44,8 @@ gulp.task('move-assets', () => {
 });
 
 // compile templates
+// https://medium.com/@chrisssycollins/compile-liquid-jekyll-front-matter-with-gulp-and-node-without-ruby-6feb6acccc3f
+// https://gist.githubusercontent.com/chrisssycollins/e30d3540c46bfa52854f6bdd5fa3486b/raw/1bdbf57c1830bd23a0366f76b39271b799ee11f6/gulpfile.js
 gulp.task('compile', ['move-assets'], () =>
     gulp.src(['_posts/**/*.html'])
         // only compile pages that have changed
