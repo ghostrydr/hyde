@@ -7,6 +7,7 @@ const fs = require('fs');
 const autoload = require('auto-load');
 const path = require('path');
 const yaml = require('js-yaml');
+const winston = require('winston');
 
 const engine = new Liquid.Engine();
 engine.registerFileSystem(new Liquid.LocalFileSystem('./_includes'));
@@ -17,7 +18,7 @@ let _config = null;
 try {
     _config = yaml.safeLoad(fs.readFileSync(path.resolve(__dirname, '_config.yml'), 'utf8'));
 } catch (e) {
-    console.log(e);
+    winston.log('error', '', e);
 }
 
 // try to autoload plugins
@@ -33,7 +34,7 @@ try {
         }
     });
 } catch (e) {
-    // do nothing
+    winston.log('error', '', e);
 }
 
 // move assets to _site
@@ -72,10 +73,10 @@ gulp.task('compile', ['move-assets'], () =>
                     file.contents = Buffer.from(final); // eslint-disable-line no-param-reassign
                     cb(null, file);
                 }).catch((e) => {
-                    console.log('err', e);
+                    winston.log('error', '', e);
                 });
             }).catch((e) => {
-                console.log('catch', e);
+                winston.log('error', '', e);
             });
             return true;
         }))

@@ -19,7 +19,8 @@
   "dependencies": {
     "i18n-2": "^0.7.2",
     "js-yaml": "^3.11.0",
-    "liquid-node": "^3.0.0"
+    "liquid-node": "^3.0.0",
+    "winston": "^2.4.1"
   },
   "devDependencies": {
     "auto-load": "^3.0.0",
